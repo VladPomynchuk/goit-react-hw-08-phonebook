@@ -1,22 +1,29 @@
 import AuthNav from 'components/AuthNav';
-import Navigation from 'components/Navigation';
 import UserMenu from 'components/UserMenu';
 import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Header } from './AppBar.styled';
 import { authSelectors } from 'redux/auth';
 import { useSelector } from 'react-redux';
+import { AppBar as StyledAppBar, Toolbar } from '@mui/material';
+import { StyledNavLink } from './AppBar.styled';
 
 const AppBar = () => {
   const isLoggedIn = useSelector(authSelectors.getIsLoggedIn);
 
   return (
     <>
-      <Header>
-        <Navigation />
-
-        {!isLoggedIn ? <AuthNav /> : <UserMenu />}
-      </Header>
+      <StyledAppBar position="static">
+        <Toolbar
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <StyledNavLink to="/contacts">Contacts</StyledNavLink>
+          {!isLoggedIn ? <AuthNav /> : <UserMenu />}
+        </Toolbar>
+      </StyledAppBar>
       <Suspense fallback="">
         <Outlet />
       </Suspense>

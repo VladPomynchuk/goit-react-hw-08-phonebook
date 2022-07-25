@@ -1,8 +1,9 @@
 import { useDeleteContactMutation } from 'redux/contactsApi';
 import { TailSpin } from 'react-loader-spinner';
-import { Item, RemoveBtn } from './ContactsListItem.styled';
 import { toast } from 'react-hot-toast';
 import PropTypes from 'prop-types';
+import { Button, ListItem, Typography } from '@mui/material';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const ContactsListItem = ({ data }) => {
   const { name, number, id } = data;
@@ -19,13 +20,26 @@ const ContactsListItem = ({ data }) => {
   };
 
   return (
-    <Item>
-      {`${name}: ${number}`}
-      <RemoveBtn onClick={handleClick}>
+    <ListItem>
+      <Typography
+        color="#fff"
+        component="p"
+        variant="body1"
+        noWrap={true}
+        mr={'auto'}
+      >{`${name}:`}</Typography>
+      <Typography
+        color="#fff"
+        component="p"
+        variant="body1"
+        sx={{ whiteSpace: 'pre' }}
+      >{`${number}`}</Typography>
+
+      <Button onClick={handleClick}>
         {isLoading && <TailSpin color="#16aee0" height="12" width="12" />}
-        Delete
-      </RemoveBtn>
-    </Item>
+        <DeleteOutlineIcon />
+      </Button>
+    </ListItem>
   );
 };
 

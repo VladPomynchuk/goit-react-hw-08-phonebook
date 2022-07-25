@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { List } from './ContactsList.styled';
 import { getFilterValue } from 'redux/filterSlice';
 import { useSelector } from 'react-redux/es/exports';
 import { useGetContactsQuery } from 'redux/contactsApi';
 import { TailSpin } from 'react-loader-spinner';
 import ContactsListItem from 'components/ContactsListItem';
+import { List } from '@mui/material';
 
 const ContactsList = () => {
   const { data, error, isLoading } = useGetContactsQuery();

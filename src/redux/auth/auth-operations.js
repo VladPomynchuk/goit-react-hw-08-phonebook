@@ -24,14 +24,19 @@ const register = createAsyncThunk('auth/register', async credentials => {
   }
 });
 
-const logIn = createAsyncThunk('auth/login', async credentials => {
+const logIn = createAsyncThunk('auth/login', async (credentials, thunkAPI) => {
   try {
     const { data } = await axios.post('/users/login', credentials);
     token.set(data.token);
     return data;
   } catch (error) {
-    toast.error('Somethinh went wrong... Try letter:(');
-    console.log(error.message);
+    if (error.response.status === 400) {
+      console.log(error.message);
+      toast.error('Invalid username/password. Try again');
+    } else {
+      toast.error('Somethinh went wrong... Try letter:(');
+      console.log(error.message);
+    }
   }
 });
 

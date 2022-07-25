@@ -1,23 +1,15 @@
-import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
-import { Label, Div, ErrorText, AddBtn } from './ContactForm.styled';
 import { useGetContactsQuery, useAddContactMutation } from 'redux/contactsApi';
 import { toast } from 'react-hot-toast';
 import formatPhoneNumber from 'helpers/formatPhoneNumber';
 import { TailSpin } from 'react-loader-spinner';
+import { useFormik } from 'formik';
+import { Container } from '@mui/system';
+import { TextField, Button, Box, Typography } from '@mui/material';
 
 export const initialValues = {
   name: '',
   number: '',
-};
-
-const FormError = ({ name }) => {
-  return (
-    <ErrorMessage
-      name={name}
-      render={message => <ErrorText>{message}</ErrorText>}
-    />
-  );
 };
 
 const phoneValid =
@@ -33,52 +25,87 @@ const schema = yup.object({
 });
 
 const ContactForm = () => {
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: schema,
+    onSubmit: (value, { resetForm }) => {
+      const { name } = value;
+      if (contacts.some(el => el.name.toLowerCase() === name.toLowerCase())) {
+        return toast.error(`${name} is already in contacts`);
+      }
+      try {
+        addContact({
+          name: value.name,
+          number: formatPhoneNumber(value.number),
+        });
+        resetForm();
+        toast.success('Contact added');
+      } catch (error) {
+        toast.error('Error when adding material');
+      }
+    },
+  });
+
   const { data: contacts } = useGetContactsQuery();
   const [addContact, { isLoading }] = useAddContactMutation();
 
-  const handleSubmit = (value, { resetForm }) => {
-    const { name } = value;
-    if (contacts.some(el => el.name.toLowerCase() === name.toLowerCase())) {
-      return toast.error(`${name} is already in contacts`);
-    }
-    try {
-      addContact({ name: value.name, number: formatPhoneNumber(value.number) });
-      resetForm();
-      toast.success('Contact added');
-    } catch (error) {
-      toast.error('Error when adding material');
-    }
-  };
-
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={schema}
-      onSubmit={handleSubmit}
-    >
-      <Form autoComplete="off">
-        <Label htmlFor="name">Name</Label>
-        <Div>
-          <Field type="text" name="name" placeholder="Full name"></Field>
-          <FormError name="name" />
-        </Div>
-
-        <Label htmlFor="number">Number</Label>
-        <Div>
-          <Field
-            type="text"
-            name="number"
-            placeholder="Phone number"
-            maxLength="10"
-          ></Field>
-          <FormError name="number" />
-        </Div>
-        <AddBtn type="submit">
-          {isLoading && <TailSpin color="#16aee0" height="20" width="20" />}
-          Add contact
-        </AddBtn>
-      </Form>
-    </Formik>
+    <>
+      <Container component="main" maxWidth="xs">
+        <Box
+          sx={{
+            marginTop: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Typography color="#fff" component="h3" variant="h5">
+            Add new contact
+          </Typography>
+          <Box
+            component="form"
+            onSubmit={formik.handleSubmit}
+            sx={{ mt: 1 }}
+            autoComplete="off"
+          >
+            <TextField
+              margin="normal"
+              autoFocus
+              fullWidth
+              id="name"
+              name="name"
+              label="Full name"
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              error={formik.touched.name && Boolean(formik.errors.name)}
+              helperText={formik.touched.name && formik.errors.name}
+            />
+            <TextField
+              inputProps={{ maxLength: 10 }}
+              margin="normal"
+              fullWidth
+              id="number"
+              name="number"
+              label="Phone"
+              value={formik.values.number}
+              onChange={formik.handleChange}
+              error={formik.touched.number && Boolean(formik.errors.number)}
+              helperText={formik.touched.number && formik.errors.number}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              {isLoading && <TailSpin color="#16aee0" height="20" width="20" />}
+              Add contact
+            </Button>
+          </Box>
+        </Box>
+      </Container>
+    </>
   );
 };
 

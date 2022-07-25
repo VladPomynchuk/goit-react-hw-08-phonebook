@@ -11,8 +11,7 @@ import AppBar from './components/AppBar';
 import LoginView from 'views/LoginView';
 import RegisterView from 'views/RegisterView';
 import ContactsView from 'views/ContactsView';
-import Container from 'components/Container';
-import HomeView from 'views/HomeView';
+import { Container } from '@mui/material';
 
 export function App() {
   const dispatch = useDispatch();
@@ -25,43 +24,35 @@ export function App() {
   return isFetchingCurrentUser ? (
     ''
   ) : (
-    <Container>
+    <Container fixed={true} sx={{ mx: 'auto' }}>
       <GlobalStyle />
+      <AppBar />
       <Routes>
-        <Route path="/" element={<AppBar />}>
-          <Route
-            index
-            element={
-              <PublicRoute>
-                <HomeView />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="login"
-            element={
-              <PublicRoute redirectTo="/contacts" restricted>
-                <LoginView />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="register"
-            element={
-              <PublicRoute redirectTo="/contacts" restricted>
-                <RegisterView />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="contacts"
-            element={
-              <PrivateRoute redirectTo="/login">
-                <ContactsView />
-              </PrivateRoute>
-            }
-          />
-        </Route>
+        <Route path="/" element={<Navigate to="/contacts" />} />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute redirectTo="/contacts" restricted>
+              <LoginView />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PublicRoute redirectTo="/contacts" restricted>
+              <RegisterView />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/contacts"
+          element={
+            <PrivateRoute redirectTo="/login">
+              <ContactsView />
+            </PrivateRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <Toaster position="top-right" reverseOrder={false} />

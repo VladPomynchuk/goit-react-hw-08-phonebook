@@ -1,3 +1,4 @@
+import { Button, Typography } from '@mui/material';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { authOperations, authSelectors } from 'redux/auth';
@@ -11,9 +12,11 @@ const UserMenu = () => {
   };
 
   return (
-    <div>
-      <span>{name}</span>
-      <button onClick={handleClick}>LogOut</button>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Typography component={'span'} variant="subtitle1" mr={2}>
+        {name}
+      </Typography>
+      <Button onClick={handleClick}>LogOut</Button>
     </div>
   );
 };
