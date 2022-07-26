@@ -21,9 +21,8 @@ const LoginView = () => {
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: schema,
-    onSubmit: (value, { resetForm }) => {
+    onSubmit: (value, _) => {
       dispatch(authOperations.logIn(value));
-      resetForm();
     },
   });
 

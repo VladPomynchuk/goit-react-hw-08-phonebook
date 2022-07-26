@@ -5,6 +5,7 @@ import { Container } from '@mui/system';
 import { Button, Modal, Box } from '@mui/material';
 import { useState } from 'react';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import CloseIcon from '@mui/icons-material/Close';
 
 const style = {
   position: 'absolute',
@@ -25,19 +26,38 @@ const ContactsView = () => {
   return (
     <>
       <Container>
-        <Container component="main" maxWidth="sm">
+        <Container component="div" maxWidth="sm">
           <Filter />
           <ContactsList />
         </Container>
-        <Box sx={{ position: 'fixed', bottom: '5%', right: '15%' }}>
+        <Box sx={{ position: 'fixed', bottom: '5%', right: '5%' }}>
           <Button size="large" onClick={handleOpen}>
-            <AddCircleIcon fontSize="large" sx={{ mr: '8px' }} /> Add new
-            contact
+            <AddCircleIcon fontSize="large" />
           </Button>
         </Box>
-        <Modal open={open} onClose={handleClose}>
+        <Modal
+          open={open}
+          onClose={(_, reason) => {
+            if (reason !== 'backdropClick') {
+              handleClose();
+            }
+          }}
+        >
           <Box sx={style}>
             <ContactForm />
+            <Button
+              sx={{
+                minWidth: '40px',
+                minHeight: '40px',
+                borderRadius: '50%',
+                position: 'absolute',
+                top: '5%',
+                right: '5%',
+              }}
+              onClick={handleClose}
+            >
+              <CloseIcon />
+            </Button>
           </Box>
         </Modal>
       </Container>

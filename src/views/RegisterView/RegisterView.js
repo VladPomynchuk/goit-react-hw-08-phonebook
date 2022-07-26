@@ -22,9 +22,8 @@ const RegisterView = () => {
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: schema,
-    onSubmit: (value, { resetForm }) => {
+    onSubmit: (value, _) => {
       dispatch(authOperations.register(value));
-      resetForm();
     },
   });
 
